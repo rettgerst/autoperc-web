@@ -1,0 +1,34 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<h1>autoperc web interface</h1>
+		<h3>water levels</h3>
+		<table>
+			<% var levelskeys = Object.keys(levels) %>
+			<tr>
+				<th>timestamp</th>
+				<th>level</th>
+			</tr>
+			<% for(var i=0; i < levelskeys.length; i++) { %>
+			<tr>
+				<td><%= levelskeys[i] %></td>
+				<td><%= levels[levelskeys[i]] %></td>
+			</tr>
+			<% } %>
+		</table>
+		<h3>config</h3>
+		<form action="/api/config" method="post">
+			<label for="enable">enable</label>
+			<input name="enable" type="checkbox" <% if (config.enable) { %> checked <% } %>>
+			<br />
+			<label for="upper_threshold">upper threshold</label>
+			<input name="upper_threshold" type="number" value="<%= config.upper_threshold %>">
+			<br />
+			<label for="lower_threshold">lower threshold</label>
+			<input name="lower_threshold" type="number" value="<%= config.lower_threshold %>">
+			<br />
+			<button type="submit">submit</button>
+		</form>
+	</body>
+</html>

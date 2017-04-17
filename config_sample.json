@@ -1,1 +1,1 @@
-{"enable":true,"upper_threshold":5,"lower_threshold":1}
+{"enable":true,"upper_threshold":5,"lower_threshold":1,"basin_low":false}

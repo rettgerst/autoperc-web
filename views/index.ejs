@@ -3,6 +3,12 @@
 	</head>
 	<body>
 		<h1>autoperc web interface</h1>
+		<% if (config.basin_low) { %>
+			<div style="background-color: red; color: white;">
+				<p>Warning, water basin is low</p>
+				<button onclick="window.location = '/api/reset_basin'">I filled it</button>
+			</div>
+		<% } %>
 		<h3>water levels</h3>
 		<table>
 			<% var levelskeys = Object.keys(levels) %>

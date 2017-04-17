@@ -31,10 +31,23 @@ app.get('/', function (req, res) {
 
 app.post('/api/config', function (req, res) {
 	console.error(req.body);
+	var config = JSON.parse(fs.readFileSync(web_config.autoperc_config_path, { encoding: 'utf8' }));
 	fs.writeFileSync(web_config.autoperc_config_path, JSON.stringify({
 		enable: req.body.enable ? (req.body.enable.toLowerCase() === 'on') : false,
 		upper_threshold: parseInt(req.body.upper_threshold),
-		lower_threshold: parseInt(req.body.lower_threshold)
+		lower_threshold: parseInt(req.body.lower_threshold),
+		basin_low: config.basin_low || false
+	}));
+	res.redirect('/');
+});
+
+app.get('/api/reset_basin', function (req, res) {
+	var config = JSON.parse(fs.readFileSync(web_config.autoperc_config_path, { encoding: 'utf8' }));
+	fs.writeFileSync(web_config.autoperc_config_path, JSON.stringify({
+		enable: config.enable,
+		upper_threshold: config.upper_threshold,
+		lower_threshold: config.lower_threshold,
+		basin_low: false
 	}));
 	res.redirect('/');
 });

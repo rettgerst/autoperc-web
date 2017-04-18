@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<script src="node_modules/highcharts/highcharts.js"></script>
 	</head>
 	<body>
 		<h1>autoperc web interface</h1>
@@ -9,20 +10,7 @@
 				<button onclick="window.location = '/api/reset_basin'">I filled it</button>
 			</div>
 		<% } %>
-		<h3>water levels</h3>
-		<table>
-			<% var levelskeys = Object.keys(levels) %>
-			<tr>
-				<th>timestamp</th>
-				<th>level</th>
-			</tr>
-			<% for(var i=0; i < levelskeys.length; i++) { %>
-			<tr>
-				<td><%= levelskeys[i] %></td>
-				<td><%= levels[levelskeys[i]] %></td>
-			</tr>
-			<% } %>
-		</table>
+		<div id="container" style="min-width: 310px; max-width: 800px; height: 300px"></div>
 		<h3>config</h3>
 		<form action="/api/config" method="post">
 			<label for="enable">enable</label>
@@ -36,5 +24,54 @@
 			<br />
 			<button type="submit">submit</button>
 		</form>
+		<script>
+			var levels = <%- JSON.stringify(levels) %>;
+			var correctedLevels = (function () {
+				var levelsForHighcharts = [];
+				for (var level of Object.keys(levels)) {
+					levelsForHighcharts.push([new Date(parseInt(level * 1000)), parseFloat(levels[level])]);
+				}
+				return levelsForHighcharts;
+			})();
+			console.error(correctedLevels);
+			Highcharts.chart('container', {
+				chart: {
+					type: 'spline'
+				},
+				title: {
+					text: 'Water level'
+				},
+				xAxis: {
+					labels: {
+						enabled: false
+					}
+				},
+				yAxis: {
+					title: {
+						text: 'Water level (cm)'
+					},
+					min: 0
+				},
+				tooltip: {
+					headerFormat: '<b>{series.name}</b><br>',
+					pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+				},
+
+				plotOptions: {
+					spline: {
+						marker: {
+							enabled: true
+						}
+					}
+				},
+				series: [{
+					showInLegend: false,
+					data: correctedLevels
+				}],
+				credits: {
+					enabled: false
+				}
+			});
+		</script>
 	</body>
 </html>

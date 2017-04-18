@@ -16,7 +16,7 @@ function read_csv () {
 	for (var line = 1; line < csv.length; line++) {
 		if (!csv[line]) break;
 		var columns = csv[line].split(',');
-		dict[columns[0]] = parseInt(columns[1]);
+		dict[columns[0]] = columns[1];
 	}
 	return dict;
 }
@@ -25,7 +25,8 @@ app.get('/', function (req, res) {
 	var config = JSON.parse(fs.readFileSync(web_config.autoperc_config_path, { encoding: 'utf8' }));
 	res.render('index', {
 		levels: read_csv(),
-		config: config
+		config: config,
+		moment: require('moment')
 	});
 });
 
@@ -51,6 +52,8 @@ app.get('/api/reset_basin', function (req, res) {
 	}));
 	res.redirect('/');
 });
+
+app.use('/node_modules', express.static(__dirname + '/node_modules'));
 
 app.listen(web_config.http_port, function () {
     console.error('web interface listening on ' + web_config.http_port);
